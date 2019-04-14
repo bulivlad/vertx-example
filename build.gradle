@@ -1,0 +1,20 @@
+plugins {
+  id 'java'
+  id 'idea'
+}
+
+group = 'io.dotinc'
+version = '1.0.0-SNAPSHOT'
+
+allprojects{
+  ext {
+    vertxVersion = '3.7.0'
+    junitJupiterEngineVersion = '5.4.0'
+    lombokVersion = '1.18.6'
+    logVersion = '1.2.3'
+  }
+}
+
+repositories {
+  mavenCentral()
+}

@@ -12,20 +12,13 @@ repositories {
   mavenCentral()
 }
 
-ext {
-  vertxVersion = '3.7.0'
-  junitJupiterEngineVersion = '5.4.0'
-  lombokVersion = '1.18.6'
-  logVersion = '1.2.3'
-}
-
 application {
   mainClassName = 'io.vertx.core.Launcher'
 }
 
 sourceCompatibility = '1.8'
 
-def mainVerticleName = 'io.dotinc.rest_client.MainVerticle'
+def mainVerticleName = 'io.dotinc.rest_server.MainVerticle'
 def watchForChange = 'src/**/*'
 def doOnChange = './gradlew classes'
 

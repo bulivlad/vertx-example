@@ -1,4 +1,4 @@
-package io.dotinc.rest_client.util;
+package io.dotinc.rest_server.util;
 
 import io.vertx.core.DeploymentOptions;
 import io.vertx.core.Vertx;

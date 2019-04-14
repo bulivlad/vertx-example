@@ -1,10 +1,9 @@
-package io.dotinc.rest_client;
+package io.dotinc.rest_server;
 
 import io.vertx.core.AbstractVerticle;
 import io.vertx.core.Future;
 import io.vertx.core.http.HttpServerResponse;
 import io.vertx.core.json.JsonObject;
-import lombok.extern.java.Log;
 import lombok.extern.slf4j.Slf4j;
 
 /**

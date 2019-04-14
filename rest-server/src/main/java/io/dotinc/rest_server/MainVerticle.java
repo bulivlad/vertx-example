@@ -1,7 +1,7 @@
-package io.dotinc.rest_client;
+package io.dotinc.rest_server;
 
-import io.dotinc.rest_client.util.DeployHelper;
-import io.dotinc.rest_client.util.DeploymentContext;
+import io.dotinc.rest_server.util.DeployHelper;
+import io.dotinc.rest_server.util.DeploymentContext;
 import io.vertx.config.ConfigRetriever;
 import io.vertx.config.ConfigRetrieverOptions;
 import io.vertx.config.ConfigStoreOptions;

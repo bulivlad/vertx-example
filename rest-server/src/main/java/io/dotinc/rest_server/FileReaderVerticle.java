@@ -1,4 +1,4 @@
-package io.dotinc.rest_client;
+package io.dotinc.rest_server;
 
 import io.vertx.core.AbstractVerticle;
 import io.vertx.core.Future;
