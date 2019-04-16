@@ -1,0 +1,12 @@
+{
+  "headers": {
+    "content-type": "application/json",
+    "accept": "application/json"
+  },
+  "method": "post",
+  "endpoint": "http://localhost:9010",
+  "uri": "/all",
+  "body": {
+    "all": "all"
+  }
+}

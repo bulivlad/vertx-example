@@ -1,3 +1,4 @@
 rootProject.name = 'vertx-example'
 
 include ':rest-server'
+include ':async-rest-server'

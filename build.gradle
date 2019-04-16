@@ -12,6 +12,7 @@ allprojects{
     junitJupiterEngineVersion = '5.4.0'
     lombokVersion = '1.18.6'
     logVersion = '1.2.3'
+    apacheVersion = '3.9'
   }
 }
 
