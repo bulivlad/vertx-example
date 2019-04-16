@@ -28,7 +28,6 @@ public class HttpClientVerticle extends AbstractVerticle {
         vertx.eventBus().consumer(HTTP_CLIENT_EVENT_ADDRESS.getValue(), messagePath -> {
             Future<JsonObject> fileReaderFuture = Future.future();
             fileReaderFuture.setHandler(handler -> {
-
                 JsonObject responseFile = handler.result();
                 String endpoint = responseFile.getString("endpoint");
                 String host = StringUtils.substringBetween(endpoint, "//", ":");

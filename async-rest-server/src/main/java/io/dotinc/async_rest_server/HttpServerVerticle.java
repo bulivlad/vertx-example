@@ -22,13 +22,11 @@ public class HttpServerVerticle extends AbstractVerticle {
     public void start(Future<Void> startFuture) {
         Integer httpPort = config().getInteger(HTTP_PORT.getValue());
         vertx.createHttpServer()
-            .requestHandler(req -> vertx.eventBus()
-                .send(FILE_READER_EVENT_ADDRESS.getValue(),
-                        RESPONSES_FILE_PATH.getValue() + req.path().toLowerCase(),
-                        handler -> handleFileReaderResponse(req, handler))
-                .send(HTTP_CLIENT_EVENT_ADDRESS.getValue(),
-                        REQUESTS_FILE_PATH.getValue() + req.path().toLowerCase(),
-                        handler -> handleHttpClientResponse(req, handler)))
+            .requestHandler(req -> {
+                Future<Void> readerFuture = Future.future();
+                sendEventToFileReader(req, readerFuture);
+                sendEventToHttpClient(req, readerFuture);
+            })
             .listen(httpPort, http -> {
                 if (http.succeeded()) {
                     startFuture.complete();
@@ -40,17 +38,25 @@ public class HttpServerVerticle extends AbstractVerticle {
             });
     }
 
-    private void handleFileReaderResponse(HttpServerRequest req, AsyncResult<Message<Object>> handler) {
+    private void sendEventToFileReader(HttpServerRequest req, Future<Void> readerFuture) {
+        vertx.eventBus().send(FILE_READER_EVENT_ADDRESS.getValue(),
+                RESPONSES_FILE_PATH.getValue() + req.path().toLowerCase(),
+                handler -> handleFileReaderResponse(req, handler, readerFuture));
+    }
+
+    private void handleFileReaderResponse(HttpServerRequest req, AsyncResult<Message<Object>> handler, Future<Void> future) {
         if(handler.succeeded()) {
             log.info("File reading ended successfully");
             buildResponse(req.response(), (JsonObject) handler.result().body());
             log.info("Response successfully sent to {}", req.path());
+            future.complete();
         } else {
             log.error("File reading did not succeeded");
             req.response()
                     .putHeader("content-type", "text/plain")
                     .setStatusCode(404)
                     .end(handler.cause().getMessage());
+            future.fail("File reading did not succeeded");
         }
     }
 
@@ -62,11 +68,24 @@ public class HttpServerVerticle extends AbstractVerticle {
         response.end(handler.getJsonObject("body").toString());
     }
 
-    private void handleHttpClientResponse(HttpServerRequest req, AsyncResult<Message<Object>> handler) {
+    private void sendEventToHttpClient(HttpServerRequest request, Future<Void> readerFuture) {
+        readerFuture.setHandler(fileHand -> {
+            if(fileHand.succeeded()) {
+                vertx.setTimer(config().getInteger(REQUEST_DELAY.getValue()),
+                        hand -> vertx.eventBus().send(HTTP_CLIENT_EVENT_ADDRESS.getValue(),
+                                REQUESTS_FILE_PATH.getValue() + request.path().toLowerCase(),
+                                handler -> handleHttpClientResponse(request, handler)));
+            } else {
+                log.error("File future failed!", fileHand.cause());
+            }
+        });
+    }
+
+    private void handleHttpClientResponse(HttpServerRequest request, AsyncResult<Message<Object>> handler) {
         if(handler.succeeded()) {
-            log.info("Request to {} sent", req.path());
+            log.info("Request to {} sent", request.path());
         } else {
-            log.error("Failed to send request to {}", req.path());
+            log.error("Failed to send request to {}", request.path());
         }
     }
 }

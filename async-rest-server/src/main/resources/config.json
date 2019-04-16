@@ -1,5 +1,6 @@
 {
     "http.port": 8123,
+    "request.delay": 30000,
     "/all": "responses/all.json",
     "/one": "responses/one.json"
 }

@@ -12,6 +12,7 @@ public enum Constants {
     RESPONSES_FILE_PATH("src/main/resources/responses"),
 
     HTTP_PORT("http.port"),
+    REQUEST_DELAY("request.delay"),
     CONFIG_LOCATION("src/main/resources/config.json");
 
     private String value;
