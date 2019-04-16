@@ -4,10 +4,10 @@ import io.vertx.core.AbstractVerticle;
 import io.vertx.core.AsyncResult;
 import io.vertx.core.Future;
 import io.vertx.core.buffer.Buffer;
-import io.vertx.core.http.HttpClient;
+import io.vertx.core.eventbus.Message;
 import io.vertx.core.http.HttpMethod;
-import io.vertx.core.http.HttpServerRequest;
 import io.vertx.core.json.JsonObject;
+import io.vertx.ext.web.client.HttpResponse;
 import io.vertx.ext.web.client.WebClient;
 import io.vertx.ext.web.client.WebClientOptions;
 import lombok.extern.slf4j.Slf4j;
@@ -39,19 +39,23 @@ public class HttpClientVerticle extends AbstractVerticle {
                 WebClientOptions webClientOptions = new WebClientOptions().setSsl(endpoint.startsWith("https"));
                 WebClient webClient = WebClient.create(vertx, webClientOptions);
                 webClient.request(HttpMethod.valueOf(method.toUpperCase()), port, host, uri)
-                        .sendJson(responseFile.getJsonObject("body"), response -> {
-                    if(response.succeeded()) {
-                        messagePath.reply(response.result() != null && response.result().body() != null ? response.result().body().toString() : "");
-                    } else {
-                        messagePath.fail(1, (response.result() != null && response.result().body() != null ? response.result().body().toString() : "Null"));
-                    }
-                });
+                        .sendJson(responseFile.getJsonObject("body"), response -> handleHttpResponse(messagePath, response));
             });
             vertx.eventBus().send(FILE_READER_EVENT_ADDRESS.getValue(), messagePath.body(), reply -> {
                 if(reply.succeeded()){
                     fileReaderFuture.complete((JsonObject) reply.result().body());
+                } else {
+                    fileReaderFuture.fail(reply.cause());
                 }
             });
         });
+    }
+
+    private void handleHttpResponse(Message<Object> messagePath, AsyncResult<HttpResponse<Buffer>> response) {
+        if(response.succeeded()) {
+            messagePath.reply(response.result() != null && response.result().body() != null ? response.result().body().toString() : "");
+        } else {
+            messagePath.fail(1, (response.result() != null && response.result().body() != null ? response.result().body().toString() : "Null"));
+        }
     }
 }

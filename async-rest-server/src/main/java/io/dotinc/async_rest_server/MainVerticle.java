@@ -1,7 +1,5 @@
 package io.dotinc.async_rest_server;
 
-import io.dotinc.async_rest_server.FileReaderVerticle;
-import io.dotinc.async_rest_server.HttpServerVerticle;
 import io.dotinc.async_rest_server.util.DeployHelper;
 import io.dotinc.async_rest_server.util.DeploymentContext;
 import io.vertx.config.ConfigRetriever;

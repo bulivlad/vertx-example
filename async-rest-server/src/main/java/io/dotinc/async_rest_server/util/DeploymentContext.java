@@ -2,6 +2,7 @@ package io.dotinc.async_rest_server.util;
 
 import io.vertx.core.DeploymentOptions;
 import io.vertx.core.Vertx;
+import lombok.Builder;
 
 /**
  * @author vladbulimac on 2019-04-14.
