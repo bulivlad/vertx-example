@@ -58,3 +58,31 @@ test {
 run {
   args = ['run', mainVerticleName, "--redeploy=$watchForChange", "--launcher-class=$mainClassName", "--on-redeploy=$doOnChange"]
 }
+
+task buildDockerImage {
+  doLast {
+    try {
+      exec {
+        commandLine 'docker', 'build', '-t', 'vertx-async-rest:latest', '-f', './docker/Dockerfile', '.'
+      }
+    } catch(Exception ex) {
+      println 'Failed to build the docker image'
+      println ex
+    }
+  }
+}
+
+task startDockerContainer(dependsOn: buildDockerImage) {
+  doLast {
+    try {
+      exec {
+        commandLine 'docker-compose', '-f', "$projectDir/docker/docker-compose.yml", 'up', '-d', '--remove-orphans', 'async-rest-server'
+      }
+    } catch(Exception ex) {
+      println 'Failed to start docker container '
+      println ex
+    }
+  }
+}
+
+buildDockerImage.dependsOn(build)

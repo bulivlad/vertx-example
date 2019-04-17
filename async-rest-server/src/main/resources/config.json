@@ -1,6 +1,8 @@
 {
     "http.port": 8123,
     "request.delay": 30000,
+    "requests.file.path": "src/main/resources/requests",
+    "responses.file.path": "src/main/resources/responses",
     "/all": "responses/all.json",
     "/one": "responses/one.json"
 }

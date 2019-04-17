@@ -8,8 +8,8 @@ public enum Constants {
     FILE_READER_EVENT_ADDRESS("verticle.file-reader"),
     HTTP_CLIENT_EVENT_ADDRESS("verticle.http-client"),
 
-    REQUESTS_FILE_PATH("src/main/resources/requests"),
-    RESPONSES_FILE_PATH("src/main/resources/responses"),
+    REQUESTS_FILE_PATH("requests.file.path"),
+    RESPONSES_FILE_PATH("responses.file.path"),
 
     HTTP_PORT("http.port"),
     REQUEST_DELAY("request.delay"),

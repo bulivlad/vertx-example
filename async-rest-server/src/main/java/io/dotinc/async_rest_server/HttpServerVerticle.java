@@ -40,7 +40,7 @@ public class HttpServerVerticle extends AbstractVerticle {
 
     private void sendEventToFileReader(HttpServerRequest req, Future<Void> readerFuture) {
         vertx.eventBus().send(FILE_READER_EVENT_ADDRESS.getValue(),
-                RESPONSES_FILE_PATH.getValue() + req.path().toLowerCase(),
+                config().getString(RESPONSES_FILE_PATH.getValue()) + req.path().toLowerCase(),
                 handler -> handleFileReaderResponse(req, handler, readerFuture));
     }
 
@@ -73,7 +73,7 @@ public class HttpServerVerticle extends AbstractVerticle {
             if(fileHand.succeeded()) {
                 vertx.setTimer(config().getInteger(REQUEST_DELAY.getValue()),
                         hand -> vertx.eventBus().send(HTTP_CLIENT_EVENT_ADDRESS.getValue(),
-                                REQUESTS_FILE_PATH.getValue() + request.path().toLowerCase(),
+                                config().getString(REQUESTS_FILE_PATH.getValue()) + request.path().toLowerCase(),
                                 handler -> handleHttpClientResponse(request, handler)));
             } else {
                 log.error("File future failed!", fileHand.cause());

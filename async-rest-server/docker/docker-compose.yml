@@ -1,0 +1,14 @@
+version: '3'
+
+services:
+  async-rest-server:
+    image: 'vertx-async-rest'
+    container_name: async-rest-server
+    ports:
+      - "8123:8123"
+    environment:
+        - CONFIG_LOCATION=config.json
+        - requests.file.path=requests
+        - responses.file.path=responses
+    restart: on-failure
+    network_mode: "bridge"

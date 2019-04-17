@@ -4,7 +4,7 @@
     "accept": "application/json"
   },
   "method": "post",
-  "endpoint": "http://localhost:9010",
+  "endpoint": "http://host.docker.internal:9010",
   "uri": "/all",
   "body": {
     "all": "all"

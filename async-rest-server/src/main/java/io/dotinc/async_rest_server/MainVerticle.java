@@ -19,12 +19,14 @@ public class MainVerticle extends AbstractVerticle {
 
     @Override
     public void start(Future<Void> startFuture) {
-
+        String configLocation = getFileConfigLocation();
         ConfigStoreOptions fileStore = new ConfigStoreOptions()
                 .setType("file")
-                .setConfig(new JsonObject().put("path", CONFIG_LOCATION.getValue()));
+                .setConfig(new JsonObject().put("path", configLocation));
+        ConfigStoreOptions envStore = new ConfigStoreOptions()
+                .setType("env");
 
-        ConfigRetrieverOptions retrieverOptions = new ConfigRetrieverOptions().addStore(fileStore);
+        ConfigRetrieverOptions retrieverOptions = new ConfigRetrieverOptions().addStore(fileStore).addStore(envStore);
         ConfigRetriever configRetriever = ConfigRetriever.create(vertx, retrieverOptions);
 
         configRetriever.getConfig(res -> {
@@ -51,10 +53,18 @@ public class MainVerticle extends AbstractVerticle {
                     }
                 });
             } else {
-                log.error("Unable to retrieve the config from file '{}'", CONFIG_LOCATION);
+                log.error("Unable to retrieve the config from file '{}'", CONFIG_LOCATION.getValue());
                 startFuture.failed();
             }
         });
+    }
+
+    private String getFileConfigLocation() {
+        String configLocation = System.getenv("CONFIG_LOCATION");
+        if(configLocation != null) {
+            return configLocation;
+        }
+        return CONFIG_LOCATION.getValue();
     }
 
 }
