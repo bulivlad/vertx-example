@@ -9,6 +9,5 @@ COPY build/libs/async-rest-server-1.0.0-SNAPSHOT-fat.jar /opt/async-rest-server/
 EXPOSE 8123
 
 WORKDIR /opt/async-rest-server/libs
-RUN ls -al ./async-rest-server.jar
-RUN java -version
+
 ENTRYPOINT ["java", "-jar", "./async-rest-server.jar"]

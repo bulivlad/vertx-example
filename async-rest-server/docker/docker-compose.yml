@@ -1,4 +1,4 @@
-version: '3'
+version: '2.4'
 
 services:
   async-rest-server:
@@ -7,8 +7,11 @@ services:
     ports:
       - "8123:8123"
     environment:
-        - CONFIG_LOCATION=config.json
-        - requests.file.path=requests
-        - responses.file.path=responses
+      - JAVA_OPTS=-XX:+UnlockExperimentalVMOptions -XX:+UseCGroupMemoryLimitForHeap -XX:+UnlockDiagnosticVMOptions -XX:NativeMemoryTracking=summary -XX:+PrintNMTStatistics
+      - CONFIG_LOCATION=config.json
+      - requests.file.path=requests
+      - responses.file.path=responses
     restart: on-failure
     network_mode: "bridge"
+    mem_limit: 512M
+    cpu_percent: 30

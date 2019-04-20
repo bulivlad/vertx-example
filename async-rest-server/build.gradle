@@ -85,4 +85,18 @@ task startDockerContainer(dependsOn: buildDockerImage) {
   }
 }
 
+task cleanDockerContainer {
+  doLast {
+    try {
+      exec {
+        commandLine 'docker-compose', '-f', "$projectDir/docker/docker-compose.yml", 'down', '--remove-orphans'
+      }
+    } catch(Exception ex) {
+      println 'Failed to start docker container '
+      println ex
+    }
+  }
+}
+
 buildDockerImage.dependsOn(build)
+cleanDockerContainer.dependsOn(clean)
