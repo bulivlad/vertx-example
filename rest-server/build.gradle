@@ -27,8 +27,9 @@ dependencies {
   implementation "io.vertx:vertx-web-client:$vertxVersion"
   implementation "io.vertx:vertx-web:$vertxVersion"
   compile "io.vertx:vertx-config:$vertxVersion"
-  compile "org.projectlombok:lombok:$lombokVersion"
   compile "ch.qos.logback:logback-classic:$logVersion"
+  compileOnly "org.projectlombok:lombok:$lombokVersion"
+  annotationProcessor "org.projectlombok:lombok:$lombokVersion"
 
   testImplementation "io.vertx:vertx-junit5:$vertxVersion"
   testRuntimeOnly "org.junit.jupiter:junit-jupiter-engine:$junitJupiterEngineVersion"
