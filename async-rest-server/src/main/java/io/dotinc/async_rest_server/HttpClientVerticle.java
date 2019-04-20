@@ -45,6 +45,7 @@ public class HttpClientVerticle extends AbstractVerticle {
                 if(reply.succeeded()){
                     fileReaderFuture.complete((JsonObject) reply.result().body());
                 } else {
+                    log.error("Failed to read from file {}", messagePath.body(), reply.cause());
                     fileReaderFuture.fail(reply.cause());
                 }
             });
@@ -55,6 +56,7 @@ public class HttpClientVerticle extends AbstractVerticle {
         if(response.succeeded()) {
             messagePath.reply(response.result() != null && response.result().body() != null ? response.result().body().toString() : "");
         } else {
+            log.error("Failed to send HTTP Request to {}", messagePath.body(), response.cause());
             messagePath.fail(1, (response.result() != null && response.result().body() != null ? response.result().body().toString() : "Null"));
         }
     }

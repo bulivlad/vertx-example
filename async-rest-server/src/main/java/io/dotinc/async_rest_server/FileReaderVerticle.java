@@ -34,7 +34,7 @@ public class FileReaderVerticle extends AbstractVerticle {
             fileHandler.succeeded();
             handler.reply(fileHandler.result().toJsonObject());
         } else {
-            log.warn("The file '{}' does not exists or does not have content", filePath);
+            log.warn("The file '{}' does not exists or does not have content", filePath, fileHandler.cause());
             fileHandler.failed();
             handler.fail(1, "no file");
         }

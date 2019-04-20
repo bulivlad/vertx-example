@@ -32,7 +32,7 @@ public class HttpServerVerticle extends AbstractVerticle {
                     startFuture.complete();
                     log.info("HTTP server started on port " + httpPort);
                 } else {
-                    log.error("HTTP server failed to start");
+                    log.error("HTTP server failed to start", http.cause());
                     startFuture.fail(http.cause());
                 }
             });
@@ -51,7 +51,7 @@ public class HttpServerVerticle extends AbstractVerticle {
             log.info("Response successfully sent to {}", req.path());
             future.complete();
         } else {
-            log.error("File reading did not succeeded");
+            log.error("File reading did not succeeded", handler.cause());
             req.response()
                     .putHeader("content-type", "text/plain")
                     .setStatusCode(404)
@@ -85,7 +85,7 @@ public class HttpServerVerticle extends AbstractVerticle {
         if(handler.succeeded()) {
             log.info("Request to {} sent", request.path());
         } else {
-            log.error("Failed to send request to {}", request.path());
+            log.error("Failed to send request to {}", request.path(), handler.cause());
         }
     }
 }
