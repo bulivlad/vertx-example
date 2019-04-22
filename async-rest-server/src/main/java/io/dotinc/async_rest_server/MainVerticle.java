@@ -12,6 +12,8 @@ import io.vertx.core.Future;
 import io.vertx.core.json.JsonObject;
 import lombok.extern.slf4j.Slf4j;
 
+import java.util.stream.Stream;
+
 import static io.dotinc.async_rest_server.enums.Constants.CONFIG_LOCATION;
 
 @Slf4j
@@ -19,14 +21,8 @@ public class MainVerticle extends AbstractVerticle {
 
     @Override
     public void start(Future<Void> startFuture) {
-        String configLocation = getFileConfigLocation();
-        ConfigStoreOptions fileStore = new ConfigStoreOptions()
-                .setType("file")
-                .setConfig(new JsonObject().put("path", configLocation));
-        ConfigStoreOptions envStore = new ConfigStoreOptions()
-                .setType("env");
 
-        ConfigRetrieverOptions retrieverOptions = new ConfigRetrieverOptions().addStore(fileStore).addStore(envStore);
+        ConfigRetrieverOptions retrieverOptions = buildConfigStores();
         ConfigRetriever configRetriever = ConfigRetriever.create(vertx, retrieverOptions);
 
         configRetriever.getConfig(res -> {
@@ -56,6 +52,21 @@ public class MainVerticle extends AbstractVerticle {
                 startFuture.failed();
             }
         });
+    }
+
+    private ConfigRetrieverOptions buildConfigStores() {
+        ConfigStoreOptions envStore = new ConfigStoreOptions()
+                .setType("env");
+        ConfigRetrieverOptions configRetrieverOptions = new ConfigRetrieverOptions();
+        String configLocation = getFileConfigLocation();
+        Stream.of(configLocation.split(",")).forEach(e -> {
+            ConfigStoreOptions storeOptions = new ConfigStoreOptions()
+                        .setType("file")
+                        .setConfig(new JsonObject().put("path", e.trim()));
+            configRetrieverOptions.addStore(storeOptions);
+        });
+        configRetrieverOptions.addStore(envStore);
+        return configRetrieverOptions;
     }
 
     private String getFileConfigLocation() {
