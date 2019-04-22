@@ -32,7 +32,6 @@ public class MainVerticle extends AbstractVerticle {
         configRetriever.getConfig(res -> {
             if(res.succeeded()){
                 JsonObject fileConfig = res.result();
-                config().mergeIn(fileConfig);
 
                 DeploymentContext deploymentContext = new DeploymentContext.DeploymentContextBuilder()
                         .withDeploymentOptions(new DeploymentOptions().setConfig(fileConfig))

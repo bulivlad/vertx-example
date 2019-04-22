@@ -8,10 +8,12 @@ services:
       - "8123:8123"
     environment:
       - JAVA_OPTS=-XX:+UnlockExperimentalVMOptions -XX:+UseCGroupMemoryLimitForHeap -XX:+UnlockDiagnosticVMOptions -XX:NativeMemoryTracking=summary -XX:+PrintNMTStatistics
-      - CONFIG_LOCATION=config.json
+      - CONFIG_LOCATION=/opt/async-rest-server/docker-app-config.json
       - requests.file.path=requests
       - responses.file.path=responses
     restart: on-failure
     network_mode: "bridge"
     mem_limit: 512M
     cpu_percent: 30
+    volumes:
+      - "./docker-app-config.json:/opt/async-rest-server/docker-app-config.json"
