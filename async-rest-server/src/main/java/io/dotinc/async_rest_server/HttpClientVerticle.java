@@ -5,6 +5,7 @@ import io.vertx.core.AsyncResult;
 import io.vertx.core.Future;
 import io.vertx.core.buffer.Buffer;
 import io.vertx.core.eventbus.Message;
+import io.vertx.core.http.HttpHeaders;
 import io.vertx.core.http.HttpMethod;
 import io.vertx.core.json.JsonObject;
 import io.vertx.ext.web.client.HttpRequest;
@@ -13,6 +14,9 @@ import io.vertx.ext.web.client.WebClient;
 import io.vertx.ext.web.client.WebClientOptions;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
+
+import java.util.Base64;
+import java.util.Optional;
 
 import static io.dotinc.async_rest_server.enums.Constants.*;
 
@@ -55,10 +59,14 @@ public class HttpClientVerticle extends AbstractVerticle {
 
     private HttpRequest<Buffer> handleBasicAuth(JsonObject config, String filePath, HttpRequest<Buffer> request) {
         String messagePath = filePath.replace(config().getString(REQUESTS_FILE_PATH.getValue()), "");
-        String authUsername = config.getJsonObject("auth").getJsonObject(messagePath).getString("username");
-        String authPassword = config.getJsonObject("auth").getJsonObject(messagePath).getString("password");
+        Optional<JsonObject> maybeAuth = Optional.ofNullable(config.getJsonObject("auth"));
+        String authUsername = maybeAuth.map(e -> e.getJsonObject(messagePath)).map(e -> e.getString("username")).orElse(null);
+        String authPassword = maybeAuth.map(e -> e.getJsonObject(messagePath)).map(e -> e.getString("password")).orElse(null);
+
         if(authUsername != null && authPassword != null) {
-            return request.basicAuthentication(authUsername, authPassword);
+            String credentials = new String(Base64.getEncoder().encode((authUsername + ":" + authPassword).getBytes()));
+            request.putHeader(HttpHeaders.AUTHORIZATION.toString(), "Basic " + credentials);
+            return request;
         }
         return request;
     }
