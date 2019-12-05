@@ -1,0 +1,8 @@
+version: "3"
+
+services:
+  vertx-server:
+    container_name: rest-server
+    image: bootcamp/server-image:${TAG}
+    ports:
+      - 9010:8123
